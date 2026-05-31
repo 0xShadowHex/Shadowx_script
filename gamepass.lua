@@ -18,10 +18,9 @@ screenGui.IgnoreGuiInset = true
 screenGui.Parent = playerGui
 
 local isMobile = UserInputService.TouchEnabled
-local autoSpeed = 100  -- signals per second
+local autoSpeed = 100  
 local REQUIRED_KEY = "key_J7mQ2xV9aL4pN8rT1wK6cY3uH5dE0"
 
--- Helper functions for a smooth modern design
 local function stroke(parent, color, thickness)
     local s = Instance.new("UIStroke", parent)
     s.Color = color or Color3.fromRGB(120, 80, 200)
@@ -40,7 +39,6 @@ local function getTime()
     return os.date("%H:%M:%S")
 end
 
--- Scale UI for mobile
 local panelSize
 local fontSizeScale = isMobile and 0.8 or 1
 local buttonHeight = isMobile and 36 or 28
@@ -53,7 +51,6 @@ else
     panelSize = UDim2.new(0, 760, 0, 520)
 end
 
--- MAIN PANEL (Initially Hidden for Key System)
 local panel = Instance.new("Frame")
 panel.Name = "Panel"
 panel.Size = panelSize
@@ -69,7 +66,6 @@ panel.Parent = screenGui
 corner(panel, 12)
 stroke(panel, Color3.fromRGB(150, 80, 255), 1.5)
 
--- Subtle glowing background gradient for panel
 local panelGradient = Instance.new("UIGradient")
 panelGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(18, 9, 36)),
@@ -78,7 +74,6 @@ panelGradient.Color = ColorSequence.new({
 panelGradient.Rotation = 45
 panelGradient.Parent = panel
 
--- KEY SYSTEM WINDOW
 local keyWindow = Instance.new("Frame")
 keyWindow.Name = "KeySystem"
 keyWindow.Size = UDim2.new(0, 360, 0, 240)
@@ -98,7 +93,6 @@ keyGradient.Color = ColorSequence.new({
 keyGradient.Rotation = 45
 keyGradient.Parent = keyWindow
 
--- Key Title
 local keyTitleText = Instance.new("TextLabel")
 keyTitleText.Size = UDim2.new(1, 0, 0, 50)
 keyTitleText.Position = UDim2.new(0, 0, 0, 10)
@@ -119,7 +113,6 @@ keySubText.TextSize = 11
 keySubText.Font = Enum.Font.Gotham
 keySubText.Parent = keyWindow
 
--- Key TextBox
 local keyBox = Instance.new("TextBox")
 keyBox.Size = UDim2.new(0, 280, 0, 42)
 keyBox.Position = UDim2.new(0.5, -140, 0, 90)
@@ -136,7 +129,6 @@ keyBox.Parent = keyWindow
 corner(keyBox, 8)
 stroke(keyBox, Color3.fromRGB(100, 60, 160), 1)
 
--- Key System Buttons
 local verifyBtn = Instance.new("TextButton")
 verifyBtn.Size = UDim2.new(0, 130, 0, 36)
 verifyBtn.Position = UDim2.new(0.5, -140, 0, 155)
@@ -163,7 +155,6 @@ getKeyBtn.Parent = keyWindow
 corner(getKeyBtn, 8)
 stroke(getKeyBtn, Color3.fromRGB(80, 40, 120), 1)
 
--- Info/Status under buttons
 local infoLabel = Instance.new("TextLabel")
 infoLabel.Size = UDim2.new(1, 0, 0, 20)
 infoLabel.Position = UDim2.new(0, 0, 0, 205)
@@ -174,7 +165,6 @@ infoLabel.TextSize = 10
 infoLabel.Font = Enum.Font.Gotham
 infoLabel.Parent = keyWindow
 
--- Clean entry animations for key system buttons
 local function bindHoverEffect(btn, activeColor, inactiveColor, strokeActive, strokeInactive)
     btn.MouseEnter:Connect(function()
         TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = activeColor}):Play()
@@ -195,7 +185,6 @@ end
 bindHoverEffect(verifyBtn, Color3.fromRGB(150, 70, 250), Color3.fromRGB(130, 60, 220), Color3.fromRGB(200, 140, 255), Color3.fromRGB(180, 110, 255))
 bindHoverEffect(getKeyBtn, Color3.fromRGB(45, 22, 80), Color3.fromRGB(30, 15, 55), Color3.fromRGB(80, 40, 120), Color3.fromRGB(80, 40, 120))
 
--- Dragging Key Window
 local keyDragging = false
 local keyDragStart, keyStartPos
 keyWindow.InputBegan:Connect(function(input)
@@ -217,7 +206,6 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Get Key Action (Clipboard Copying + Custom Copy Message)
 getKeyBtn.MouseButton1Click:Connect(function()
     pcall(setclipboard, "https://discord.gg/BwFNhUHNjC")
     infoLabel.Text = "Key link copied to clipboard!"
@@ -229,9 +217,7 @@ getKeyBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Verification Action
 local function unlockScript()
-    -- Animate out the Key Window smoothly
     infoLabel.Text = "Access Granted! Welcome to ShadowX."
     infoLabel.TextColor3 = Color3.fromRGB(0, 255, 170)
     TweenService:Create(keyBox, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(10, 40, 30)}):Play()
@@ -246,7 +232,6 @@ local function unlockScript()
     task.wait(0.4)
     keyWindow:Destroy()
     
-    -- Show Main UI with a stylish pop-up slide animation
     panel.Visible = true
     local originalSize = panel.Size
     panel.Size = UDim2.new(0, 0, 0, 0)
@@ -259,7 +244,6 @@ verifyBtn.MouseButton1Click:Connect(function()
     if keyBox.Text == REQUIRED_KEY then
         unlockScript()
     else
-        -- Wrong Key Shake Animation
         infoLabel.Text = "Access Denied! Invalid Key."
         infoLabel.TextColor3 = Color3.fromRGB(255, 80, 120)
         
@@ -292,10 +276,6 @@ verifyBtn.MouseButton1Click:Connect(function()
     end
 end)
 
-
--- ==================== MAIN UI STYLING & LOGIC ====================
-
--- Resize handle (PC only)
 local resizing = false
 if not isMobile then
     local resizeHandle = Instance.new("Frame")
@@ -332,7 +312,6 @@ if not isMobile then
     end)
 end
 
--- Dragging Main Panel
 local dragging = false
 local dragStart, startPos
 
@@ -357,7 +336,6 @@ local function onInputEnded(input)
     end
 end
 
--- Title bar
 local titleBar = Instance.new("Frame")
 titleBar.Name = "TitleBar"
 titleBar.Size = UDim2.new(1, 0, 0, titleBarHeight)
@@ -366,7 +344,6 @@ titleBar.BorderSizePixel = 0
 titleBar.Parent = panel
 corner(titleBar, 12)
 
--- Subtle Gradient on Title Bar
 local titleGrad = Instance.new("UIGradient")
 titleGrad.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 15, 60)),
@@ -374,7 +351,6 @@ titleGrad.Color = ColorSequence.new({
 })
 titleGrad.Parent = titleBar
 
--- Fill top corner gaps
 local titleFill = Instance.new("Frame")
 titleFill.Size = UDim2.new(1, 0, 0, 18)
 titleFill.Position = UDim2.new(0, 0, 1, -18)
@@ -387,7 +363,6 @@ titleBar.InputBegan:Connect(onInputBegan)
 UserInputService.InputChanged:Connect(onInputChanged)
 UserInputService.InputEnded:Connect(onInputEnded)
 
--- Live dot with a pulsing glow
 local liveDot = Instance.new("Frame")
 liveDot.Size = UDim2.new(0, 9, 0, 9)
 liveDot.Position = UDim2.new(0, 20, 0.5, -4)
@@ -429,7 +404,6 @@ titleText.Font = Enum.Font.GothamBold
 titleText.ZIndex = titleBar.ZIndex + 2
 titleText.Parent = titleBar
 
--- Log area
 local logArea = Instance.new("ScrollingFrame")
 logArea.Name = "LogArea"
 logArea.Size = UDim2.new(1, -16, 1, -(titleBarHeight + footerHeight + 16))
@@ -453,7 +427,6 @@ logPad.PaddingBottom = UDim.new(0, 4)
 logPad.PaddingLeft = UDim.new(0, 4)
 logPad.PaddingRight = UDim.new(0, 4)
 
--- Footer
 local footer = Instance.new("Frame")
 footer.Size = UDim2.new(1, 0, 0, footerHeight)
 footer.Position = UDim2.new(0, 0, 1, -footerHeight)
@@ -518,7 +491,6 @@ stroke(stopAllBtn, Color3.fromRGB(170, 70, 130), 1)
 bindHoverEffect(settingsBtn, Color3.fromRGB(60, 30, 90), Color3.fromRGB(45, 20, 65), Color3.fromRGB(230, 200, 255), Color3.fromRGB(140, 90, 200))
 bindHoverEffect(stopAllBtn, Color3.fromRGB(90, 30, 70), Color3.fromRGB(70, 20, 55), Color3.fromRGB(255, 160, 210), Color3.fromRGB(170, 70, 130))
 
--- Close Button (Stands Out Beautifully)
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 28, 0, 28)
 closeBtn.Position = UDim2.new(1, -8, 0, 8)
@@ -536,11 +508,10 @@ stroke(closeBtn, Color3.fromRGB(180, 50, 100), 1)
 
 bindHoverEffect(closeBtn, Color3.fromRGB(110, 35, 60), Color3.fromRGB(80, 25, 45), Color3.fromRGB(255, 150, 180), Color3.fromRGB(180, 50, 100))
 
--- Settings window (toggle)
 local settingsWindow = nil
 local function toggleSettings()
     if settingsWindow then
-        -- Play fade out animation then destroy
+        
         local inst = settingsWindow
         TweenService:Create(inst, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 320, 0, 0), Position = UDim2.new(0.5, -160, 0.5, 0)}):Play()
         task.wait(0.25)
@@ -613,7 +584,6 @@ local function toggleSettings()
 
         closeSettingsBtn.MouseButton1Click:Connect(toggleSettings)
 
-        -- Drag settings window
         local dragStartPos, dragStartMouse
         local draggingSettings = false
         settingsTitleBar.InputBegan:Connect(function(input)
@@ -698,7 +668,6 @@ local function toggleSettings()
                     autoSpeed = newSpeed
                     speedBox.Text = tostring(autoSpeed)
                     
-                    -- Success Feedback
                     local strBox = speedBox:FindFirstChildOfClass("UIStroke")
                     local oldStrColor = strBox and strBox.Color
                     TweenService:Create(speedBox, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(15, 45, 30)}):Play()
@@ -725,7 +694,6 @@ local function toggleSettings()
                         if savedMsg then savedMsg:Destroy() end
                     end)
                 else
-                    -- Invalid Range Red flash
                     local strBox = speedBox:FindFirstChildOfClass("UIStroke")
                     local oldBg = speedBox.BackgroundColor3
                     local oldStrColor = strBox and strBox.Color
@@ -736,7 +704,6 @@ local function toggleSettings()
                     if strBox then TweenService:Create(strBox, TweenInfo.new(0.3), {Color = oldStrColor}):Play() end
                 end
             else
-                -- Not a number Red flash
                 local strBox = speedBox:FindFirstChildOfClass("UIStroke")
                 local oldBg = speedBox.BackgroundColor3
                 local oldStrColor = strBox and strBox.Color
@@ -748,7 +715,6 @@ local function toggleSettings()
             end
         end)
         
-        -- Smooth Pop Settings Window
         settingsWindow.Size = UDim2.new(0, 320, 0, 0)
         settingsWindow.Position = UDim2.new(0.5, -160, 0.5, 0)
         TweenService:Create(settingsWindow, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 320, 0, 220), Position = UDim2.new(0.5, -160, 0.5, -110)}):Play()
@@ -757,7 +723,6 @@ end
 
 settingsBtn.MouseButton1Click:Connect(toggleSettings)
 
--- Visibility toggles
 local uiVisible = true
 local reopenButton = nil
 
@@ -766,7 +731,6 @@ local function showGui()
         screenGui.Enabled = true
         uiVisible = true
         if reopenButton then reopenButton.Visible = false end
-        -- Pop main panel open
         panel.Size = UDim2.new(0, 0, 0, 0)
         panel.Position = UDim2.new(0.5, 0, 0.5, 0)
         TweenService:Create(panel, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = panelSize, Position = UDim2.new(0.5, -panelSize.X.Offset/2, 0.5, -panelSize.Y.Offset/2)}):Play()
@@ -776,7 +740,6 @@ end
 local function hideGui()
     if screenGui.Enabled then
         uiVisible = false
-        -- Shrink main panel out
         local panelT = TweenService:Create(panel, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)})
         panelT:Play()
         panelT.Completed:Connect(function()
@@ -933,7 +896,6 @@ local function addLog(label, id, signalType)
     corner(entry, 10)
     stroke(entry, Color3.fromRGB(100, 60, 150), 1)
     
-    -- Sleek background gradient on list items
     local logGrad = Instance.new("UIGradient")
     logGrad.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromRGB(28, 14, 52)),
@@ -941,7 +903,6 @@ local function addLog(label, id, signalType)
     })
     logGrad.Parent = entry
 
-    -- Entry entry animations (scaling & fade in)
     entry.Size = UDim2.new(1, -2, 0, 0)
     entry.BackgroundTransparency = 1
     TweenService:Create(entry, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
@@ -990,14 +951,12 @@ local function addLog(label, id, signalType)
     timeEl.Font = Enum.Font.GothamMedium
     timeEl.Parent = entry
 
-    -- Perfectly aligned container for interactive buttons (Overlaying clean & responsive)
     local buttonFrame = Instance.new("Frame")
     buttonFrame.Size = UDim2.new(0, 210, 1, 0)
     buttonFrame.Position = UDim2.new(1, -218, 0, 0)
     buttonFrame.BackgroundTransparency = 1
     buttonFrame.Parent = entry
 
-    -- Horizontal list layout inside button frame to prevent overlapping entirely
     local horizontalLayout = Instance.new("UIListLayout")
     horizontalLayout.FillDirection = Enum.FillDirection.Horizontal
     horizontalLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
@@ -1130,7 +1089,6 @@ local function addLog(label, id, signalType)
         end
     end
 
-    -- Use InputBegan/InputEnded for both mouse and touch
     local function onRunPress()
         if isSpamming then return end
         holdStart = tick()
